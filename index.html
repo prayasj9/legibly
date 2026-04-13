@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legibly — Your codebase, finally readable</title>
+  <meta name="description" content="Legibly is a CLI that turns legacy codebases into a living context layer — so your team and your AI tools never start from zero again." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #0a0a0a; --fg: #f0ede6; --accent: #b8ff57; --muted: #666; --border: #1e1e1e; --card: #111; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--fg); font-family: 'Syne', sans-serif; overflow-x: hidden; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* NAV */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(10,10,10,0.92); backdrop-filter: blur(12px); z-index: 100; }
+    .logo { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; cursor: pointer; color: var(--fg); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--muted); font-size: 0.85rem; text-decoration: none; transition: color 0.2s; font-weight: 500; }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-cta { background: var(--accent) !important; color: #0a0a0a !important; padding: 0.5rem 1.1rem; border-radius: 6px; font-size: 0.82rem; font-weight: 700; text-decoration: none; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero { padding: 5rem 2rem 4rem; max-width: 900px; margin: 0 auto; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: #111; border: 1px solid #2a2a2a; border-radius: 100px; padding: 0.35rem 0.9rem; font-size: 0.75rem; font-weight: 600; color: var(--accent); margin-bottom: 2rem; font-family: 'JetBrains Mono', monospace; }
+    .badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    h1 { font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 800; line-height: 1.0; letter-spacing: -0.04em; margin-bottom: 1.5rem; }
+    h1 em { color: var(--accent); font-style: normal; }
+    .hero-sub { font-size: 1.1rem; color: #999; max-width: 560px; line-height: 1.65; margin-bottom: 2.5rem; font-weight: 400; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .btn-primary { background: var(--accent); color: #0a0a0a !important; padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s, transform 0.2s; }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-ghost { border: 1px solid #2a2a2a; color: var(--fg) !important; padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: border-color 0.2s, transform 0.2s; }
+    .btn-ghost:hover { border-color: #555; transform: translateY(-1px); }
+
+    /* TERMINAL */
+    .terminal-wrap { max-width: 900px; margin: 0 auto 5rem; padding: 0 2rem; }
+    .terminal { background: #0e0e0e; border: 1px solid #222; border-radius: 12px; overflow: hidden; }
+    .terminal-bar { background: #1a1a1a; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #222; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r{background:#ff5f57} .dot-y{background:#febc2e} .dot-g{background:#28c840}
+    .terminal-title { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #555; margin-left: 8px; }
+    .terminal-body { padding: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 2; }
+    .t-prompt{color:var(--accent)} .t-cmd{color:var(--fg)} .t-comment{color:#444} .t-out{color:#888} .t-success{color:var(--accent)} .t-file{color:#7eb8f7} .t-warn{color:#febc2e}
+
+    /* SECTIONS */
+    .section { max-width: 900px; margin: 0 auto; padding: 4rem 2rem; }
+    .section-label { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 1rem; font-weight: 500; }
+    h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.25rem; }
+    h2 em { color: var(--accent); font-style: normal; }
+    .section-divider { border: none; border-top: 1px solid var(--border); max-width: 900px; margin: 0 auto; }
+
+    /* JOURNEY */
+    .journey { display: flex; align-items: center; margin: 3rem 0; flex-wrap: wrap; gap: 0; }
+    .journey-step { flex: 1; min-width: 120px; text-align: center; padding: 1.25rem 0.75rem; background: var(--card); border: 1px solid var(--border); }
+    .journey-step:first-child { border-radius: 10px 0 0 10px; }
+    .journey-step:last-child { border-radius: 0 10px 10px 0; background: #0f1a00; border-color: #2a4a00; }
+    .journey-step-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.4rem; font-family: 'JetBrains Mono', monospace; }
+    .journey-step-text { font-size: 0.82rem; font-weight: 600; line-height: 1.3; }
+    .journey-step:last-child .journey-step-text { color: var(--accent); }
+    .journey-arrow { color: #333; font-size: 1.2rem; padding: 0 0.25rem; flex-shrink: 0; }
+
+    /* QUOTE */
+    .quote-block { border-left: 3px solid var(--accent); padding: 1.25rem 1.75rem; background: #0d0d0d; border-radius: 0 10px 10px 0; margin: 3rem 0; }
+    .quote-text { font-size: 1.15rem; font-weight: 600; line-height: 1.5; margin-bottom: 0.5rem; }
+    .quote-attr { font-size: 0.8rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+    /* FEATURES */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 2.5rem; }
+    .feature { background: var(--card); padding: 1.75rem; transition: background 0.2s; }
+    .feature:hover { background: #151515; }
+    .feature-icon { font-size: 1.4rem; margin-bottom: 1rem; }
+    .feature-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .feature-desc { font-size: 0.82rem; color: #888; line-height: 1.6; }
+
+    /* OUTPUT */
+    .output-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 2rem; }
+    .output-file { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.1rem; transition: border-color 0.2s; }
+    .output-file:hover { border-color: #333; }
+    .output-file-name { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #7eb8f7; margin-bottom: 0.4rem; }
+    .output-file-desc { font-size: 0.78rem; color: #777; line-height: 1.5; }
+
+    /* LEVELS */
+    .levels { margin-top: 2rem; display: flex; flex-direction: column; gap: 8px; }
+    .level { display: flex; align-items: center; gap: 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1.2rem; transition: border-color 0.2s; }
+    .level:last-child { border-color: #2a4a00; background: #0a1200; }
+    .level-num { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); min-width: 20px; }
+    .level-icon { font-size: 1rem; min-width: 24px; text-align: center; }
+    .level-name { font-weight: 700; font-size: 0.88rem; min-width: 100px; }
+    .level:last-child .level-name { color: var(--accent); }
+    .level-desc { font-size: 0.8rem; color: #777; }
+
+    /* CTA */
+    .cta-section { max-width: 900px; margin: 0 auto; padding: 4rem 2rem 5rem; text-align: center; }
+    .cta-section h2 { margin-bottom: 1rem; }
+    .cta-section p { color: #888; margin-bottom: 2rem; font-size: 1rem; }
+    .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .email-form { display: flex; gap: 8px; max-width: 420px; margin: 0 auto 0.75rem; flex-wrap: wrap; justify-content: center; }
+    .email-input { flex: 1; min-width: 220px; background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 0.72rem 1rem; color: var(--fg); font-size: 0.88rem; font-family: 'Syne', sans-serif; outline: none; transition: border-color 0.2s; }
+    .email-input:focus { border-color: var(--accent); }
+    .email-input::placeholder { color: #555; }
+    .submit-btn { background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px; padding: 0.72rem 1.25rem; font-size: 0.88rem; font-weight: 700; cursor: pointer; font-family: 'Syne', sans-serif; transition: opacity 0.2s; }
+    .submit-btn:hover { opacity: 0.85; }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .form-msg { font-size: 0.82rem; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace; min-height: 1.2em; }
+    .form-msg.success { color: var(--accent); }
+    .form-msg.error { color: #ff5f57; }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; max-width: 900px; margin: 0 auto; }
+    footer p { font-size: 0.78rem; color: var(--muted); }
+    footer a { color: var(--muted); text-decoration: none; font-size: 0.78rem; transition: color 0.2s; }
+    footer a:hover { color: var(--fg); }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .hero > * { animation: fadeUp 0.5s ease both; }
+    .hero > *:nth-child(1){animation-delay:0.05s} .hero > *:nth-child(2){animation-delay:0.1s} .hero > *:nth-child(3){animation-delay:0.15s} .hero > *:nth-child(4){animation-delay:0.2s}
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      nav { padding: 1rem; }
+      .nav-links { gap: 0.75rem; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero { padding: 3rem 1rem 2rem; }
+      .terminal-wrap { padding: 0 1rem; }
+      .section { padding: 3rem 1rem; }
+      .journey { flex-direction: column; }
+      .journey-step { width: 100%; border-radius: 0 !important; }
+      .journey-step:first-child { border-radius: 10px 10px 0 0 !important; }
+      .journey-step:last-child { border-radius: 0 0 10px 10px !important; }
+      .journey-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#">legi<span>bly</span></a>
+  <div class="nav-links">
+    <a href="https://www.npmjs.com/package/legibly" target="_blank">npm</a>
+    <a href="#features">features</a>
+    <a href="#output">output</a>
+    <a href="#score">ai score</a>
+    <a href="https://github.com/prayasj9/legibly" target="_blank" class="nav-cta">get started →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge"><span class="badge-dot"></span> open source · bring your own API key</div>
+  <h1>your codebase,<br><em>finally readable</em></h1>
+  <p class="hero-sub">Legibly is a CLI that turns legacy codebases into a living context layer — so your team and your AI tools never start from zero again.</p>
+  <div class="hero-actions">
+    <a href="https://www.npmjs.com/package/legibly" target="_blank" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      npx legibly init
+    </a>
+    <a href="https://github.com/prayasj9/legibly" target="_blank" class="btn-ghost">view on github →</a>
+  </div>
+</section>
+
+<div class="terminal-wrap">
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <span class="terminal-title">~/your-legacy-repo</span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="t-prompt">$ </span><span class="t-cmd">npx legibly analyse</span></div>
+      <div><span class="t-out">↳ crawling 847 files...</span></div>
+      <div><span class="t-out">↳ building import graph...</span></div>
+      <div><span class="t-out">↳ analysing 47 chunks </span><span class="t-comment">// parallel, checkpoint-safe</span></div>
+      <div><span class="t-out">↳ stitching system map...</span></div>
+      <div>&nbsp;</div>
+      <div><span class="t-success">✓ done in 4m 12s</span></div>
+      <div>&nbsp;</div>
+      <div><span class="t-comment">// generated /legibly</span></div>
+      <div><span class="t-file">  onboarding.md</span><span class="t-comment">        ← best doc in your repo</span></div>
+      <div><span class="t-file">  CODEBASE_MAP.md</span><span class="t-comment">       ← full system map</span></div>
+      <div><span class="t-file">  BLAST_RADIUS.md</span><span class="t-comment">       ← what breaks if you touch X</span></div>
+      <div><span class="t-file">  RIPPLE_MAP.md</span><span class="t-comment">         ← downstream impact chains</span></div>
+      <div><span class="t-file">  KNOWN_AS.md</span><span class="t-comment">           ← alias resolution</span></div>
+      <div><span class="t-file">  AI_READINESS.md</span><span class="t-comment">       ← your AI readiness score</span></div>
+      <div><span class="t-file">  /services/payment.md</span><span class="t-warn">  ← HIGH RISK · 6 dependents</span></div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">// THE VISION</div>
+  <h2>how AI-ready is<br><em>your codebase?</em></h2>
+  <p style="color:#888; max-width:560px; line-height:1.65; font-size:0.95rem;">Most codebases aren't ready for AI-assisted development — not because AI isn't capable, but because there's no context to work from. Legibly builds that context layer, so your AI tools can actually operate on your code safely.</p>
+  <div class="journey">
+    <div class="journey-step"><div class="journey-step-label">start</div><div class="journey-step-text">Undocumented legacy mess</div></div>
+    <div class="journey-arrow">→</div>
+    <div class="journey-step"><div class="journey-step-label">run legibly</div><div class="journey-step-text">Living context layer</div></div>
+    <div class="journey-arrow">→</div>
+    <div class="journey-step"><div class="journey-step-label">feed to AI</div><div class="journey-step-text">Agent-ready codebase</div></div>
+    <div class="journey-arrow">→</div>
+    <div class="journey-step"><div class="journey-step-label">goal</div><div class="journey-step-text">Fully Autonomous</div></div>
+  </div>
+  <div class="quote-block">
+    <div class="quote-text">"Claude Code is the car. Legibly is the road."</div>
+    <div class="quote-attr">// core philosophy</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="features">
+  <div class="section-label">// WHAT IT DOES</div>
+  <h2>not just another<br><em>doc generator</em></h2>
+  <div class="features-grid">
+    <div class="feature"><div class="feature-icon">🗺️</div><div class="feature-title">system-level understanding</div><div class="feature-desc">Crawls your entire repo, builds a static import graph, groups files by actual relationships — not arbitrary size.</div></div>
+    <div class="feature"><div class="feature-icon">💥</div><div class="feature-title">blast radius mapping</div><div class="feature-desc">Every service doc leads with risk level, dependents, and exactly what breaks if you touch it.</div></div>
+    <div class="feature"><div class="feature-icon">🔁</div><div class="feature-title">checkpoint-safe</div><div class="feature-desc">Saves progress after every chunk. Crash at chunk 38/47? Resume from exactly where you left off.</div></div>
+    <div class="feature"><div class="feature-icon">🤖</div><div class="feature-title">AI-agnostic</div><div class="feature-desc">Works with Claude, GPT, or any provider. Switch with one config line. Your key, your machine, zero backend cost.</div></div>
+    <div class="feature"><div class="feature-icon">👁️</div><div class="feature-title">watch mode</div><div class="feature-desc">Incremental re-analysis on file change. Context stays fresh as your codebase evolves.</div></div>
+    <div class="feature"><div class="feature-icon">🌍</div><div class="feature-title">team-level context</div><div class="feature-desc">One engineer runs it, the whole team benefits. Persistent, shareable, compounds over time.</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="output">
+  <div class="section-label">// OUTPUT</div>
+  <h2>one command.<br><em>seven deliverables.</em></h2>
+  <div class="output-grid">
+    <div class="output-file"><div class="output-file-name">onboarding.md</div><div class="output-file-desc">Best onboarding doc your repo has ever had. New engineer ready in hours, not weeks.</div></div>
+    <div class="output-file"><div class="output-file-name">CODEBASE_MAP.md</div><div class="output-file-desc">Full system map — how every service connects and what depends on what.</div></div>
+    <div class="output-file"><div class="output-file-name">BLAST_RADIUS.md</div><div class="output-file-desc">What breaks downstream if you touch any given file or service.</div></div>
+    <div class="output-file"><div class="output-file-name">RIPPLE_MAP.md</div><div class="output-file-desc">Full downstream impact chains — trace a change across the entire system.</div></div>
+    <div class="output-file"><div class="output-file-name">KNOWN_AS.md</div><div class="output-file-desc">Alias resolution — same service, different names, all resolved to one canonical identity.</div></div>
+    <div class="output-file"><div class="output-file-name">AI_READINESS.md</div><div class="output-file-desc">Your AI readiness score. Know exactly what level you're at and how to reach the next.</div></div>
+    <div class="output-file"><div class="output-file-name">/services · /specs · /runbooks</div><div class="output-file-desc">Per-service docs, behavioural specs for AI agents, and operational runbooks.</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="score">
+  <div class="section-label">// AI READINESS SCORE</div>
+  <h2>where does your<br><em>codebase stand?</em></h2>
+  <p style="color:#888; max-width:500px; line-height:1.65; font-size:0.9rem; margin-bottom:1.5rem;">Run <code style="color:#7eb8f7; font-family:'JetBrains Mono',monospace; font-size:0.82rem;">npx legibly assess</code> in 10 seconds. No AI needed — scores structural signals directly.</p>
+  <div class="levels">
+    <div class="level"><span class="level-num">1</span><span class="level-icon">⚙️</span><span class="level-name">Manual</span><span class="level-desc">AI can only explain your code</span></div>
+    <div class="level"><span class="level-num">2</span><span class="level-icon">💡</span><span class="level-name">Assisted</span><span class="level-desc">AI suggests, human reviews everything</span></div>
+    <div class="level"><span class="level-num">3</span><span class="level-icon">🤝</span><span class="level-name">Paired</span><span class="level-desc">AI writes, human reviews before commit</span></div>
+    <div class="level"><span class="level-num">4</span><span class="level-icon">🎯</span><span class="level-name">Trusted</span><span class="level-desc">AI writes and commits, human reviews PRs</span></div>
+    <div class="level"><span class="level-num">5</span><span class="level-icon">🤖</span><span class="level-name">Autonomous</span><span class="level-desc">AI operates end-to-end</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="cta-section">
+  <div class="section-label" style="text-align:center">// GET STARTED</div>
+  <h2>stop guessing.<br><em>start shipping.</em></h2>
+  <p>point it at your messiest repo. one command.</p>
+  <div class="email-form">
+    <input class="email-input" type="email" id="waitlist-email" placeholder="your@email.com" />
+    <button class="submit-btn" id="waitlist-btn" onclick="submitWaitlist()">join waitlist</button>
+  </div>
+  <div id="form-msg" class="form-msg"></div>
+  <div class="cta-actions">
+    <a href="https://www.npmjs.com/package/legibly" target="_blank" class="btn-primary">npx legibly init →</a>
+    <a href="https://github.com/prayasj9/legibly" target="_blank" class="btn-ghost">view on github</a>
+  </div>
+</section>
+
+<footer>
+  <p>legibly · open source · MIT license</p>
+  <div class="footer-links">
+    <a href="https://www.npmjs.com/package/legibly" target="_blank">npm</a>
+    <a href="https://github.com/prayasj9/legibly" target="_blank">github</a>
+  </div>
+</footer>
+
+<script>
+async function submitWaitlist() {
+  const email = document.getElementById('waitlist-email').value.trim();
+  const btn = document.getElementById('waitlist-btn');
+  const msg = document.getElementById('form-msg');
+  if (!email || !email.includes('@')) {
+    msg.textContent = 'please enter a valid email.';
+    msg.className = 'form-msg error';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'submitting...';
+  msg.textContent = '';
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: '9e022187-88dd-4584-8d23-04e59c0c0475',
+        email: email,
+        subject: 'New Legibly Waitlist Signup',
+        from_name: 'Legibly Waitlist'
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      btn.textContent = "✓ you're in";
+      msg.textContent = "we'll be in touch when legibly launches.";
+      msg.className = 'form-msg success';
+      document.getElementById('waitlist-email').value = '';
+    } else { throw new Error(); }
+  } catch {
+    btn.disabled = false;
+    btn.textContent = 'join waitlist';
+    msg.textContent = 'something went wrong. try again.';
+    msg.className = 'form-msg error';
+  }
+}
+document.getElementById('waitlist-email').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') submitWaitlist();
+});
+</script>
+</body>
+</html>
