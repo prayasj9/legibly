@@ -5,7 +5,7 @@ Thanks for your interest in contributing. Here's what you need to know.
 ## Development setup
 
 ```bash
-git clone https://github.com/prayasjain/legibly.git
+git clone https://github.com/prayasj9/legibly.git
 cd legibly
 npm install
 npm run build
@@ -100,7 +100,7 @@ MCP tools are defined in `src/mcp/index.ts` using `server.tool(name, description
 
 ## Reporting bugs
 
-Open an issue at https://github.com/prayasjain/legibly/issues with:
+Open an issue at https://github.com/prayasj9/legibly/issues with:
 - The command you ran
 - The error message or unexpected output
 - Your `legibly.config.json` (redact the API key)
