@@ -1,6 +1,6 @@
 {
   "name": "legibly",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Turn legacy codebases into a living, structured context layer",
   "main": "dist/cli/index.js",
   "bin": {
