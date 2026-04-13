@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.legibly-cache/
+legibly/
+*.tsbuildinfo
+.DS_Store
+.env
+.env.local

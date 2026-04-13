@@ -1,0 +1,63 @@
+{
+  "name": "legibly",
+  "version": "0.1.0",
+  "description": "Turn legacy codebases into a living, structured context layer",
+  "main": "dist/cli/index.js",
+  "bin": {
+    "legibly": "dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prayasjain/legibly.git"
+  },
+  "homepage": "https://github.com/prayasjain/legibly#readme",
+  "bugs": {
+    "url": "https://github.com/prayasjain/legibly/issues"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "cli",
+    "codebase",
+    "documentation",
+    "ai",
+    "legacy",
+    "onboarding",
+    "context",
+    "legibly"
+  ],
+  "author": "Prayas Jain",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^25.6.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.4"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.69",
+    "@ai-sdk/openai": "^3.0.52",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "ai": "^6.0.158",
+    "chalk": "^5.6.2",
+    "chokidar": "^5.0.0",
+    "commander": "^14.0.3",
+    "cosmiconfig": "^9.0.1",
+    "fs-extra": "^11.3.4",
+    "ora": "^9.3.0",
+    "zod": "^4.3.6"
+  }
+}
