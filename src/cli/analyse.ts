@@ -159,10 +159,10 @@ async function stitchAssessWrite(
 
   console.log(chalk.bold(`\n✓ Analysis complete in ${duration}\n`))
   console.log(`  ${chalk.white(written.onboarding.replace(cwd + '/', ''))}`)
-  console.log(`  ${chalk.white(written.relationshipMap.replace(cwd + '/', ''))}`)
-  console.log(`  ${chalk.white(written.reposTouched.replace(cwd + '/', ''))}`)
-  console.log(`  ${chalk.white(written.aliasResolution.replace(cwd + '/', ''))}`)
-  console.log(`  ${chalk.white(written.proxyChains.replace(cwd + '/', ''))}`)
+  console.log(`  ${chalk.white(written.codebaseMap.replace(cwd + '/', ''))}`)
+  console.log(`  ${chalk.white(written.blastRadius.replace(cwd + '/', ''))}`)
+  console.log(`  ${chalk.white(written.knownAs.replace(cwd + '/', ''))}`)
+  console.log(`  ${chalk.white(written.rippleMap.replace(cwd + '/', ''))}`)
   if (written.assessment) console.log(`  ${chalk.white(written.assessment.replace(cwd + '/', ''))}`)
   console.log(`  ${chalk.dim(`${written.services.length} service docs, ${written.specs.length} specs, ${written.runbooks.length} runbooks`)}`)
 

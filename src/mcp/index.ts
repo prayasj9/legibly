@@ -146,21 +146,21 @@ export async function runServe(cwd: string = process.cwd()): Promise<void> {
     }
   )
 
-  // ── get_repos_touched ──────────────────────────────────────────────────────
+  // ── get_blast_radius ──────────────────────────────────────────────────────
   server.tool(
-    'get_repos_touched',
+    'get_blast_radius',
     'Look up what else you need to check when changing a service — blast radius lookup',
     { service: z.string().describe('Service name to look up').optional() },
     async ({ service }) => {
-      const content = readFileSafe(path.join(outputDir, 'REPOS_TOUCHED.md'))
-      if (!content) return { content: [{ type: 'text' as const, text: 'No REPOS_TOUCHED.md found. Run `legibly analyse` first.' }] }
+      const content = readFileSafe(path.join(outputDir, 'BLAST_RADIUS.md'))
+      if (!content) return { content: [{ type: 'text' as const, text: 'No BLAST_RADIUS.md found. Run `legibly analyse` first.' }] }
       if (!service) return { content: [{ type: 'text' as const, text: content }] }
 
       // Filter to just relevant lines
       const lower = service.toLowerCase()
       const lines = content.split('\n')
       const relevant = lines.filter((l) => l.toLowerCase().includes(lower))
-      return { content: [{ type: 'text' as const, text: relevant.length > 0 ? relevant.join('\n') : `No entries found for "${service}" in repos-touched lookup.` }] }
+      return { content: [{ type: 'text' as const, text: relevant.length > 0 ? relevant.join('\n') : `No entries found for "${service}" in blast radius lookup.` }] }
     }
   )
 

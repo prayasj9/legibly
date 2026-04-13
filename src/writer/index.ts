@@ -6,11 +6,11 @@ import { renderOnboarding } from './onboarding.js'
 import { renderServiceDoc } from './service.js'
 import { renderSpec } from './spec.js'
 import { renderRunbook } from './runbook.js'
-import { renderRelationshipMap } from './relationship-map.js'
+import { renderCodebaseMap } from './codebase-map.js'
 import { renderAssessment } from './assessment.js'
-import { renderReposTouched } from './repos-touched.js'
-import { renderAliasResolution } from './alias-resolution.js'
-import { renderProxyChains } from './proxy-chains.js'
+import { renderBlastRadius } from './blast-radius.js'
+import { renderKnownAs } from './known-as.js'
+import { renderRippleMap } from './ripple-map.js'
 import { buildGraphOutput, buildFreshnessOutput } from './graph.js'
 import { loadAnnotations, getAnnotationsForService } from '../annotations/index.js'
 
@@ -22,10 +22,10 @@ export interface WriteOptions {
 
 export interface WrittenFiles {
   onboarding: string
-  relationshipMap: string
-  reposTouched: string
-  aliasResolution: string
-  proxyChains: string
+  codebaseMap: string
+  blastRadius: string
+  knownAs: string
+  rippleMap: string
   assessment: string | null
   graph: string
   freshness: string
@@ -54,17 +54,17 @@ export function writeOutput(options: WriteOptions): WrittenFiles {
   const onboardingPath = path.join(outputDir, 'onboarding.md')
   write(onboardingPath, renderOnboarding(system))
 
-  const mapPath = path.join(outputDir, 'SERVICE_RELATIONSHIP_MAP.md')
-  write(mapPath, renderRelationshipMap(system))
+  const mapPath = path.join(outputDir, 'CODEBASE_MAP.md')
+  write(mapPath, renderCodebaseMap(system))
 
-  const reposTouchedPath = path.join(outputDir, 'REPOS_TOUCHED.md')
-  write(reposTouchedPath, renderReposTouched(system))
+  const blastRadiusPath = path.join(outputDir, 'BLAST_RADIUS.md')
+  write(blastRadiusPath, renderBlastRadius(system))
 
-  const aliasResolutionPath = path.join(outputDir, 'ALIAS_RESOLUTION.md')
-  write(aliasResolutionPath, renderAliasResolution(system))
+  const knownAsPath = path.join(outputDir, 'KNOWN_AS.md')
+  write(knownAsPath, renderKnownAs(system))
 
-  const proxyChainPath = path.join(outputDir, 'PROXY_CHAINS.md')
-  write(proxyChainPath, renderProxyChains(system))
+  const proxyChainPath = path.join(outputDir, 'RIPPLE_MAP.md')
+  write(proxyChainPath, renderRippleMap(system))
 
   // Load annotations so service docs can include team notes
   const annotationStore = loadAnnotations(outputDir)
@@ -107,10 +107,10 @@ export function writeOutput(options: WriteOptions): WrittenFiles {
   // freshness.json — after all files are known
   const allRelativeFiles = [
     'onboarding.md',
-    'SERVICE_RELATIONSHIP_MAP.md',
-    'REPOS_TOUCHED.md',
-    'ALIAS_RESOLUTION.md',
-    'PROXY_CHAINS.md',
+    'CODEBASE_MAP.md',
+    'BLAST_RADIUS.md',
+    'KNOWN_AS.md',
+    'RIPPLE_MAP.md',
     ...(assessmentPath != null ? ['AI_READINESS.md'] : []),
     ...serviceFiles.map((f) => path.relative(outputDir, f)),
     ...specFiles.map((f) => path.relative(outputDir, f)),
@@ -122,10 +122,10 @@ export function writeOutput(options: WriteOptions): WrittenFiles {
 
   return {
     onboarding: onboardingPath,
-    relationshipMap: mapPath,
-    reposTouched: reposTouchedPath,
-    aliasResolution: aliasResolutionPath,
-    proxyChains: proxyChainPath,
+    codebaseMap: mapPath,
+    blastRadius: blastRadiusPath,
+    knownAs: knownAsPath,
+    rippleMap: proxyChainPath,
     assessment: assessmentPath,
     graph: graphPath,
     freshness: freshnessPath,

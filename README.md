@@ -49,10 +49,10 @@ Run `legibly analyse` once. Get a complete, queryable picture of your codebase:
 | File | What it is |
 |------|-----------|
 | `legibly/onboarding.md` | System overview — what it does, where to start, critical paths, failure points, domain glossary |
-| `legibly/SERVICE_RELATIONSHIP_MAP.md` | Cross-module dependency map with risk levels |
-| `legibly/REPOS_TOUCHED.md` | Blast radius lookup — "if you change X, also check Y" |
-| `legibly/ALIAS_RESOLUTION.md` | Name disambiguation — maps every alias and legacy name to its canonical module |
-| `legibly/PROXY_CHAINS.md` | Multi-hop dependency chains — A → B → C blast radius paths |
+| `legibly/CODEBASE_MAP.md` | Cross-module dependency map with risk levels |
+| `legibly/BLAST_RADIUS.md` | Blast radius lookup — "if you change X, also check Y" |
+| `legibly/KNOWN_AS.md` | Name disambiguation — maps every alias and legacy name to its canonical module |
+| `legibly/RIPPLE_MAP.md` | Multi-hop dependency chains — A → B → C blast radius paths |
 | `legibly/AI_READINESS.md` | AI Readiness Score — safe zones, hard blockers, what to fix to go further |
 | `legibly/annotations.json` | Persistent team notes — added via `legibly annotate`, merged into service docs |
 | `legibly/services/*.md` | Per-module doc — owns, failure points, implicit assumptions, env vars, `beforeYouTouch` list |
@@ -86,7 +86,7 @@ Commit the `legibly/` directory. Your team and every AI tool you add shares the 
 | `get_overview` | System onboarding guide |
 | `list_services` | All modules with risk levels |
 | `get_service(name)` | Full module doc — failure points, assumptions, env vars, team notes |
-| `get_repos_touched(service?)` | Blast radius lookup |
+| `get_blast_radius(service?)` | Blast radius lookup |
 | `get_assessment` | AI Readiness Score and safe zones |
 | `search(query)` | Search across all docs and specs |
 | `annotate(service, note)` | Record a team learning |
@@ -99,7 +99,7 @@ Example `CLAUDE.md` for your project:
 ```markdown
 Codebase context lives in ./legibly/. Start with onboarding.md, then check
 the relevant service doc in services/ before touching any module.
-Use REPOS_TOUCHED.md before any cross-module change.
+Use BLAST_RADIUS.md before any cross-module change.
 ```
 
 ---

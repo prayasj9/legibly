@@ -1,6 +1,6 @@
 import type { SystemAnalysis } from '../stitcher/types.js'
 
-export function renderAliasResolution(system: SystemAnalysis): string {
+export function renderKnownAs(system: SystemAnalysis): string {
   const aliases = system.aliases
 
   const tableRows = aliases

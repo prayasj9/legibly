@@ -1,6 +1,6 @@
 import type { SystemAnalysis } from '../stitcher/types.js'
 
-export function renderRelationshipMap(system: SystemAnalysis): string {
+export function renderCodebaseMap(system: SystemAnalysis): string {
   const { nodes, edges } = system.dependencyGraph
 
   // Group nodes by layer

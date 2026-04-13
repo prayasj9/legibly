@@ -6,7 +6,7 @@ import { renderOnboarding } from '../onboarding.js'
 import { renderServiceDoc } from '../service.js'
 import { renderSpec } from '../spec.js'
 import { renderRunbook } from '../runbook.js'
-import { renderRelationshipMap } from '../relationship-map.js'
+import { renderCodebaseMap } from '../codebase-map.js'
 import { renderAssessment } from '../assessment.js'
 import { buildGraphOutput, buildFreshnessOutput } from '../graph.js'
 import { writeOutput } from '../index.js'
@@ -197,20 +197,20 @@ describe('renderRunbook', () => {
   })
 })
 
-describe('renderRelationshipMap', () => {
+describe('renderCodebaseMap', () => {
   it('includes system name and layer sections', () => {
-    const md = renderRelationshipMap(makeSystem())
+    const md = renderCodebaseMap(makeSystem())
     expect(md).toContain('Acme Platform')
     expect(md).toContain('Core Business')
   })
 
   it('includes dependency relationships', () => {
-    const md = renderRelationshipMap(makeSystem())
+    const md = renderCodebaseMap(makeSystem())
     expect(md).toContain('depends on')
   })
 
   it('includes alias table', () => {
-    const md = renderRelationshipMap(makeSystem())
+    const md = renderCodebaseMap(makeSystem())
     expect(md).toContain('PaymentService')
   })
 })
@@ -264,10 +264,10 @@ describe('writeOutput', () => {
     const written = writeOutput({ outputDir, system: makeSystem(), assessment: makeAssessment() })
 
     expect(existsSync(written.onboarding)).toBe(true)
-    expect(existsSync(written.relationshipMap)).toBe(true)
-    expect(existsSync(written.reposTouched)).toBe(true)
-    expect(existsSync(written.aliasResolution)).toBe(true)
-    expect(existsSync(written.proxyChains)).toBe(true)
+    expect(existsSync(written.codebaseMap)).toBe(true)
+    expect(existsSync(written.blastRadius)).toBe(true)
+    expect(existsSync(written.knownAs)).toBe(true)
+    expect(existsSync(written.rippleMap)).toBe(true)
     expect(existsSync(written.assessment!)).toBe(true)
     expect(existsSync(written.graph)).toBe(true)
     expect(existsSync(written.freshness)).toBe(true)

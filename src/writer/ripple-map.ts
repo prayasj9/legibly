@@ -60,7 +60,7 @@ export function computeProxyChains(
     .sort((a, b) => b.length - a.length || a.description.localeCompare(b.description))
 }
 
-export function renderProxyChains(system: SystemAnalysis): string {
+export function renderRippleMap(system: SystemAnalysis): string {
   const chains = computeProxyChains(
     system.dependencyGraph.nodes,
     system.dependencyGraph.edges

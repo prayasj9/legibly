@@ -95,7 +95,7 @@ function buildTouchMap(system: SystemAnalysis): TouchEntry[] {
   return entries
 }
 
-export function renderReposTouched(system: SystemAnalysis): string {
+export function renderBlastRadius(system: SystemAnalysis): string {
   const entries = buildTouchMap(system)
 
   if (entries.length === 0) {
